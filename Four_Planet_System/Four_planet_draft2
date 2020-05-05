@@ -1,0 +1,168 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[42]:
+
+
+import rebound
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# In[43]:
+
+
+#unit masses
+mass_jupiter  = 1.898e+27 #[kg]
+solar_mass    = 1.989e+30 #[kg]
+#masses of the solar system HR 8799
+
+#this is the mass of the new solar system and we take it as mass units
+mass_unit     = 2.924e+30 #[kg]
+mass_star_HR  = 2.924e+30/mass_unit #[mass_unit]
+
+#mass of the planets in [mass_unit]
+b_planet_mass = 7.0 * mass_jupiter/mass_unit
+c_planet_mass = 8.3 * mass_jupiter/mass_unit
+d_planet_mass = 8.3 * mass_jupiter/mass_unit
+e_planet_mass = 9.2 * mass_jupiter/mass_unit
+
+#distance
+#bas unit = distance from the sun of the system to the first planet which is planet e
+base_unit     = 16.4 #[Au]
+b_planet_dist = 68.0 / base_unit #[base_unit]
+c_planet_dist = 42.9 / base_unit #[base_unit]
+d_planet_dist = 27.0 / base_unit #[base_unit]
+e_planet_dist = 16.4 / base_unit #[base_unit]
+
+#velocities
+b_planet_time = 2*np.pi*b_planet_dist/(164250.0/365.25) #[years]
+c_planet_time = 2*np.pi*b_planet_dist/(82145.0/365.25)  #[years]
+d_planet_time = 2*np.pi*b_planet_dist/(41054.0/365.25)  #[years]
+e_planet_time = 2*np.pi*b_planet_dist/(18000.0/365.25)  #[years]
+
+
+# In[44]:
+
+
+#function to set up the simulation
+def setup():
+    #this is the main simulation
+    sim = rebound.Simulation()
+    #adding the star and the planets
+    #m = mass, x = distance of x, vy = velocity in y, vx = 0 
+    sim.add(m=solar_mass)
+    sim.add(m=b_planet_mass,x=b_planet_dist,y=0,vy=b_planet_time)#,T=b_planet_time)
+    sim.add(m=c_planet_mass,x=c_planet_dist,y=0,vy=c_planet_time)#,T=c_planet_time)
+    sim.add(m=d_planet_mass,x=d_planet_dist,y=0,vy=d_planet_time)#,T=d_planet_time)
+    sim.add(m=e_planet_mass,x=e_planet_dist,y=0,vy=e_planet_time)#,T=e_planet_time)
+    return sim
+
+
+# In[176]:
+
+
+#time for the integration
+times = np.linspace(0.,100.0,5)
+#creating a list to save the positions in x and in y
+eccsx  = np.zeros((len(times),5))
+eccsy  = np.zeros((len(times),5))
+#creating a list to save the eccentricities
+eccs   = np.zeros((len(times),5))
+
+
+# In[177]:
+
+
+#we start the simulation
+sim = setup()
+for i, t in enumerate(times):
+    #we run for the timein times
+    sim.integrate(t)
+    #saving in the list for position in x and position in y
+    #saving in the list for eccentricity
+    eccsx[i,0] = sim.particles[0].x
+    eccsy[i,0] = sim.particles[0].y
+    eccsx[i,1] = sim.particles[1].x
+    eccsy[i,1] = sim.particles[1].y
+    eccs[i,1] = sim.particles[1].e
+    eccsx[i,2] = sim.particles[2].x
+    eccsy[i,2] = sim.particles[2].y
+    eccs[i,2] = sim.particles[2].e
+    eccsx[i,3] = sim.particles[3].x
+    eccsy[i,3] = sim.particles[3].y
+    eccs[i,3] = sim.particles[3].e
+    eccsx[i,4] = sim.particles[4].x
+    eccsy[i,4] = sim.particles[4].y
+    eccs[i,4] = sim.particles[4].e
+    
+firstx = []
+secondx = []
+thirdx = []
+fourthx = []
+fifthx = []
+firsty = []
+secondy = []
+thirdy = []
+fourthy = []
+fifthy = []
+
+for i in range(len(eccsx)):
+    firstx.append(eccsx[i][0])
+    secondx.append(eccsx[i][1])
+    thirdx.append(eccsx[i][2])
+    fourthx.append(eccsx[i][3])
+    fifthx.append(eccsx[i][4])
+    
+for i in range(len(eccsx)):
+    firsty.append(eccsx[i][0])
+    secondy.append(eccsx[i][1])
+    thirdy.append(eccsx[i][2])
+    fourthy.append(eccsx[i][3])
+    fifthy.append(eccsx[i][4])
+print(secondx)
+
+
+# In[181]:
+
+
+#plotting the postitions of the 4 planets and the star
+plt.plot(firstx,firsty,'o')
+plt.plot(secondx,secondy,'o')
+plt.plot(thirdx,thirdy,'o')
+plt.plot(fourthx,fourthy,'o')
+plt.plot(fifthx,fifthy,'o')
+
+
+# In[101]:
+
+
+#plotting the eccentricities
+plt.plot(times, eccs)
+#print(eccs)
+#print(times[1:])
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
