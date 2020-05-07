@@ -85,7 +85,44 @@ for j in range(0,10000,1000):
     
     fig = rebound.OrbitPlot(sim, unitlabel="[AU]")
     
+# For eccentricity and orbit plots
+times = np.linspace(0.,2*10000*np.pi,1000) 
+print(len(times))
+#creating a list to save the positions in x and in y
 
+x = np.zeros((6,len(times)))
+y = np.zeros((6,len(times)))
+ecc = np.zeros((6,len(times)))
+
+sim = setup()
+sim.integrator = "ias15"
+sim.move_to_com()
+for i, t in enumerate(times):
+    #we run for the timein times
+    sim.integrate(t)
+    
+    
+    x[0][i] = sim.particles[0].x
+    y[0][i] = sim.particles[0].y
+
+    x[1][i] = sim.particles[1].x
+    y[1][i] = sim.particles[1].y    
+    ecc[1][i] = sim.particles[1].e
+    x[2][i] = sim.particles[2].x
+    y[2][i] = sim.particles[2].y
+    ecc[2][i] = sim.particles[2].e
+    x[3][i] = sim.particles[3].x
+    y[3][i] = sim.particles[3].y
+    ecc[3][i] = sim.particles[3].e
+    x[4][i] = sim.particles[4].x
+    y[4][i] = sim.particles[4].y
+    ecc[4][i] = sim.particles[4].e
+    x[5][i] = sim.particles[5].x
+    y[5][i] = sim.particles[5].y
+    ecc[5][i] = sim.particles[5].e
+
+for orbit in sim.calculate_orbits():
+    print(orbit)
 
 for i in range(6):
     plt.plot(x[i],y[i])
